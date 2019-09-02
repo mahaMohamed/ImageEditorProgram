@@ -5,7 +5,10 @@
  */
 package imageeditorprogram;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -18,8 +21,10 @@ public class ImageReader extends javax.swing.JFrame {
     /**
      * Creates new form ImageReader
      */
-    private final JFileChooser openFileChooser;
-
+    private  JFileChooser openFileChooser;
+    private BufferedImage imageLoaded; 
+            
+            
     public ImageReader() {
         initComponents();
 
@@ -27,7 +32,7 @@ public class ImageReader extends javax.swing.JFrame {
         //to be edited (set path dynamically)
         openFileChooser.setCurrentDirectory(new File ("c:\\temp"));
         //to be edited (more image types) 
-        openFileChooser.setFileFilter(new FileNameExtensionFilter("PNG images", "png"));
+        openFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
         
         
     }
@@ -60,25 +65,47 @@ public class ImageReader extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addGap(67, 67, 67))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(142, 142, 142)
                 .addComponent(openFileButton)
-                .addGap(18, 18, 18)
-                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(openFileButton)
-                    .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(262, Short.MAX_VALUE))
+                .addComponent(openFileButton)
+                .addGap(38, 38, 38)
+                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void openFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileButtonActionPerformed
+
+        
+        int returnValue = openFileChooser.showOpenDialog(this); 
+        
+        if (returnValue == JFileChooser.APPROVE_OPTION){
+            
+            try {
+                imageLoaded = ImageIO.read(openFileChooser.getSelectedFile()); 
+                messageLabel.setText("Image file successfuly loaded!");
+                
+            } catch (IOException ioe){
+                messageLabel.setText("Failed to load image file!");
+            }
+            
+        } 
+        else {
+            messageLabel.setText("No file chosen!");
+        }
+      
+        
     }//GEN-LAST:event_openFileButtonActionPerformed
 
     /**
@@ -92,7 +119,7 @@ public class ImageReader extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
