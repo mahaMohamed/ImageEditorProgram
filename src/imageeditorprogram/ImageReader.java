@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package imageeditorprogram;
+
+import java.awt.Color;
 import javax.swing.JFileChooser;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,35 +19,32 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author Maha
  */
 public class ImageReader extends javax.swing.JFrame {
-            
 
     /**
      * Creates new form ImageReader
      */
-    private  JFileChooser openFileChooser;
-    protected BufferedImage loadedImage; 
+    private JFileChooser openFileChooser;
+    protected BufferedImage loadedImage;
 
-    
-            
     public ImageReader() {
         initComponents();
 
-        openFileChooser = new JFileChooser(); 
+        openFileChooser = new JFileChooser();
         //to be edited (set path dynamically)
-        openFileChooser.setCurrentDirectory(new File ("c:\\temp"));
+        openFileChooser.setCurrentDirectory(new File("c:\\temp"));
         //to be edited (more image types) 
         openFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
-        
-        
+
     }
-        public BufferedImage getImageLoaded() {
+
+    public BufferedImage getImageLoaded() {
         return loadedImage;
     }
 
     public void setImageLoaded(BufferedImage imageLoaded) {
         this.loadedImage = imageLoaded;
     }
-        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,14 +56,54 @@ public class ImageReader extends javax.swing.JFrame {
 
         openFileButton = new javax.swing.JButton();
         messageLabel = new javax.swing.JLabel();
+        darkenImageButton = new javax.swing.JButton();
+        brightenImageButton = new javax.swing.JButton();
+        rotateImageButton = new javax.swing.JButton();
+        blurImage = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Editor");
 
         openFileButton.setText("Open file...");
+        openFileButton.setMaximumSize(new java.awt.Dimension(120, 25));
+        openFileButton.setMinimumSize(new java.awt.Dimension(120, 25));
         openFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openFileButtonActionPerformed(evt);
+            }
+        });
+
+        darkenImageButton.setText("Darken Image");
+        darkenImageButton.setMaximumSize(new java.awt.Dimension(120, 25));
+        darkenImageButton.setMinimumSize(new java.awt.Dimension(120, 25));
+        darkenImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                darkenImageButtonActionPerformed(evt);
+            }
+        });
+
+        brightenImageButton.setText("Brighten Image");
+        brightenImageButton.setMaximumSize(new java.awt.Dimension(120, 25));
+        brightenImageButton.setMinimumSize(new java.awt.Dimension(120, 25));
+        brightenImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brightenImageButtonActionPerformed(evt);
+            }
+        });
+
+        rotateImageButton.setText("Rotate Image");
+        rotateImageButton.setMaximumSize(new java.awt.Dimension(120, 25));
+        rotateImageButton.setMinimumSize(new java.awt.Dimension(120, 25));
+        rotateImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rotateImageButtonActionPerformed(evt);
+            }
+        });
+
+        blurImage.setText("Blur Image");
+        blurImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                blurImageActionPerformed(evt);
             }
         });
 
@@ -73,22 +112,38 @@ public class ImageReader extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                .addGap(67, 67, 67))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(142, 142, 142)
-                .addComponent(openFileButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(135, 135, 135)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(blurImage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(openFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(brightenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                                .addComponent(darkenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(openFileButton)
-                .addGap(38, 38, 38)
+                .addComponent(openFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(brightenImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(darkenImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rotateImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(blurImage)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -96,31 +151,87 @@ public class ImageReader extends javax.swing.JFrame {
 
     private void openFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileButtonActionPerformed
 
-        
-        int returnValue = openFileChooser.showOpenDialog(this); 
-        
-        if (returnValue == JFileChooser.APPROVE_OPTION){
-            
+        int returnValue = openFileChooser.showOpenDialog(this);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+
             try {
-                loadedImage = ImageIO.read(openFileChooser.getSelectedFile()); 
-                ImageEditor editor = new ImageEditor(); 
+                
+                loadedImage = ImageIO.read(openFileChooser.getSelectedFile());
+                ImageEditor editor = new ImageEditor();
                 editor.loadImage(loadedImage);
-                
+                messageLabel.setForeground(Color.BLACK);
                 messageLabel.setText("Image file successfuly loaded!");
-               
-                
-                
-            } catch (IOException ioe){
+
+            } catch (IOException ioe) {
                 messageLabel.setText("Failed to load image file!");
             }
-            
-        } 
-        else {
+
+        } else {
+            messageLabel.setForeground(Color.BLACK);
             messageLabel.setText("No file chosen!");
         }
-      
-        
+
+
     }//GEN-LAST:event_openFileButtonActionPerformed
+
+    private void darkenImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_darkenImageButtonActionPerformed
+
+        if (loadedImage != null) {
+            BufferedImage newImage = ImageEditor.darkenImage(loadedImage);
+            if (ImageEditor.writeImage(newImage)) {
+                messageLabel.setText("Image successfully darkened!");
+            }
+        } else {
+            noImageLoadedErrorMessage();
+        }
+
+
+    }//GEN-LAST:event_darkenImageButtonActionPerformed
+
+    private void brightenImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brightenImageButtonActionPerformed
+
+        if (loadedImage != null) {
+            BufferedImage newImage = ImageEditor.brightenImage(loadedImage);
+            if (ImageEditor.writeImage(newImage)) {
+                messageLabel.setText("Image successfully brightened!");
+            }
+
+        } else {
+            noImageLoadedErrorMessage();
+        }
+    }//GEN-LAST:event_brightenImageButtonActionPerformed
+
+    private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
+           if (loadedImage != null) {
+            BufferedImage newImage = ImageEditor.rotateImage(loadedImage);
+            if (ImageEditor.writeImage(newImage)) {
+                messageLabel.setText("Image successfuly rotated!");
+            }
+
+        } else {
+            noImageLoadedErrorMessage();
+        }
+    }//GEN-LAST:event_rotateImageButtonActionPerformed
+
+    private void blurImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blurImageActionPerformed
+     if (loadedImage != null) {
+            BufferedImage newImage = ImageEditor.blurImage(5).filter(loadedImage, null);
+            if (ImageEditor.writeImage(newImage)) {
+                messageLabel.setText("Image successfuly blurred!");
+            }
+
+        } else {
+            noImageLoadedErrorMessage();
+        }
+    }//GEN-LAST:event_blurImageActionPerformed
+
+    public void noImageLoadedErrorMessage() {
+
+        messageLabel.setForeground(Color.RED);
+        messageLabel.setText("No image loaded!");
+
+    }
 
     /**
      * @param args the command line arguments
@@ -155,11 +266,16 @@ public class ImageReader extends javax.swing.JFrame {
                 new ImageReader().setVisible(true);
             }
         });
-        
+
+//        ImageEditor.load
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton blurImage;
+    private javax.swing.JButton brightenImageButton;
+    private javax.swing.JButton darkenImageButton;
     private javax.swing.JLabel messageLabel;
     private javax.swing.JButton openFileButton;
+    private javax.swing.JButton rotateImageButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -13,15 +13,15 @@ import java.awt.image.Kernel;
 import java.awt.image.RescaleOp;
 
 public class ImageEditor {
-    
-    BufferedImage image;
+
+    protected static BufferedImage image;
 
     public static ConvolveOp blurImage(int radius) {
         if (radius < 1) {
             throw new IllegalArgumentException("Radius must be >= 1");
         }
         int size = radius * 2 + 1;
-        float weight = 1f/ (size * size);
+        float weight = 1f / (size * size);
         float[] data = new float[size * size];
         for (int i = 0; i < data.length; i++) {
             data[i] = weight;
@@ -44,51 +44,73 @@ public class ImageEditor {
         return newImage;
     }
 
-    private static void brightenImage(BufferedImage image) {
+    protected static BufferedImage brightenImage(BufferedImage image) {
         RescaleOp rescaleOp = new RescaleOp(1.5f, 15, null);
         rescaleOp.filter(image, image);
+        return image;
 
     }
 
-    private static void darkenImage(BufferedImage image) {
+    protected static BufferedImage darkenImage(BufferedImage image) {
         RescaleOp rescaleOp = new RescaleOp(0.5f, 15, null);
         rescaleOp.filter(image, image);
+        return image;
 
     }
 
-    
-    public  void loadImage (BufferedImage image) throws IOException{
-        
+    protected void loadImage(BufferedImage image) throws IOException {
+
         System.out.println("In load Image");
-        
-        this.image = image; 
-       BufferedImage editedImage;
-       editedImage = rotateImage(image);
-       ImageIO.write(editedImage, "jpg", new File("C:\\Users\\lostm\\Downloads\\new_image.jpg"));
-        
-        
-    }
-    public static void main(String[] args) {
 
-        File file = new File("C:\\Users\\lostm\\Downloads\\olena.jpg");
-        BufferedImage image = null;
-        
-        
+        this.image = image;
+        BufferedImage editedImage;
+//        editedImage = rotateImage(image);
+//        ImageIO.write(editedImage, "jpg", new File("C:\\Users\\lostm\\Downloads\\new_image.jpg"));
+
+    }
+
+    protected static boolean writeImage(BufferedImage image) {
 
         try {
-            image = ImageIO.read(file);
 
-            //        ImageEditor.brightenImage(image);
-           // image = ImageEditor.rotate(image);
-
-           image = blurImage(10).filter(image, null);
-           ImageIO.write(image, "jpg", new File("C:\\Users\\lostm\\Downloads\\blur_olena.jpg"));
+            ImageIO.write(image, "jpg", new File("C:\\Users\\lostm\\Downloads\\your_new_image.jpg"));
+            return true;
 
         } catch (IOException e) {
 
             e.printStackTrace();
+            return false;
         }
 
     }
+//    public static void main(String[] args) {
+//
+////        File file = new File("C:\\Users\\lostm\\Downloads\\olena.jpg");
+////        BufferedImage image = null;
+////        
+////        
+////
+////        try {
+////            image = ImageIO.read(file);
+////
+////            //        ImageEditor.brightenImage(image);
+////           // image = ImageEditor.rotate(image);
+////
+////           image = blurImage(10).filter(image, null);
+////           ImageIO.write(image, "jpg", new File("C:\\Users\\lostm\\Downloads\\blur_olena.jpg"));
+////
+////        } catch (IOException e) {
+////
+////            e.printStackTrace();
+////        }
+//
+//          if (ImageEditor.image != null){
+//              ImageEditor.brightenImage(image);
+//              System.out.println("");
+//              
+//          } else {
+//              System.out.println("Not set");
+//          }
+//    }
 
 }
