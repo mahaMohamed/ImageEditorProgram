@@ -11,11 +11,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.awt.image.RescaleOp;
+import java.util.Stack;
 
 public class ImageEditor {
 
     protected static BufferedImage image;
 
+    protected static Stack stack = new Stack(); 
     public static ConvolveOp blurImage(int radius) {
         if (radius < 1) {
             throw new IllegalArgumentException("Radius must be >= 1");
@@ -40,20 +42,29 @@ public class ImageEditor {
                 newImage.setRGB(height - 1 - j, i, image.getRGB(i, j));
             }
         }
-
+        image = newImage;
         return newImage;
     }
 
     protected static BufferedImage brightenImage(BufferedImage image) {
-        RescaleOp rescaleOp = new RescaleOp(1.5f, 15, null);
+        stack.push(image);
+        RescaleOp rescaleOp = new RescaleOp(1.125f, 0, null);
         rescaleOp.filter(image, image);
         return image;
+        
 
     }
 
+    protected BufferedImage undo(BufferedImage image){
+      return (BufferedImage) stack.pop();
+        
+        
+    }
     protected static BufferedImage darkenImage(BufferedImage image) {
-        RescaleOp rescaleOp = new RescaleOp(0.5f, 15, null);
+        RescaleOp rescaleOp = new RescaleOp(0.875f, 0, null);
         rescaleOp.filter(image, image);
+//             rescaleOp = new RescaleOp(0.75f, 0, null);
+//        rescaleOp.filter(image, image);
         return image;
 
     }

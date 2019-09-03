@@ -6,12 +6,15 @@
 package imageeditorprogram;
 
 import java.awt.Color;
-import javax.swing.JFileChooser;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -25,6 +28,9 @@ public class ImageReader extends javax.swing.JFrame {
      */
     private JFileChooser openFileChooser;
     protected BufferedImage loadedImage;
+    private JFrame f;
+    private ImageIcon icon;
+    private JLabel label;
 
     public ImageReader() {
         initComponents();
@@ -34,6 +40,7 @@ public class ImageReader extends javax.swing.JFrame {
         openFileChooser.setCurrentDirectory(new File("c:\\temp"));
         //to be edited (more image types) 
         openFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
+        f = new JFrame();
 
     }
 
@@ -60,6 +67,7 @@ public class ImageReader extends javax.swing.JFrame {
         brightenImageButton = new javax.swing.JButton();
         rotateImageButton = new javax.swing.JButton();
         blurImage = new javax.swing.JButton();
+        imageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Editor");
@@ -112,31 +120,38 @@ public class ImageReader extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(135, 135, 135)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
+                        .addComponent(blurImage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(135, 135, 135)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(blurImage, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(openFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(brightenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                .addComponent(darkenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(openFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(brightenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(darkenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(imageLabel)
+                        .addGap(99, 99, 99))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(openFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(brightenImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(darkenImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(brightenImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(darkenImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(imageLabel)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(rotateImageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -156,12 +171,31 @@ public class ImageReader extends javax.swing.JFrame {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
 
             try {
-                
+
                 loadedImage = ImageIO.read(openFileChooser.getSelectedFile());
                 ImageEditor editor = new ImageEditor();
                 editor.loadImage(loadedImage);
+
                 messageLabel.setForeground(Color.BLACK);
                 messageLabel.setText("Image file successfuly loaded!");
+//                icon = new ImageIcon(loadedImage);
+//                label = new JLabel(icon);
+                // f = new JFrame();
+//                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                f.getContentPane().add(new JScrollPane(label));
+//                f.setSize(500, 500);
+//                f.setLocation(400, 400);
+//                f.setVisible(true);
+
+                //    JFrame frame = new JFrame();
+                icon = new ImageIcon(loadedImage);
+                label = new JLabel(icon);
+//                imageLabel = new JLabel (icon); 
+//                imageLabel.setText("helllllllllllllo");
+                f.add(label);
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                f.pack();
+                f.setVisible(true);
 
             } catch (IOException ioe) {
                 messageLabel.setText("Failed to load image file!");
@@ -181,6 +215,27 @@ public class ImageReader extends javax.swing.JFrame {
             BufferedImage newImage = ImageEditor.darkenImage(loadedImage);
             if (ImageEditor.writeImage(newImage)) {
                 messageLabel.setText("Image successfully darkened!");
+//                f.doClick();
+//               f.getContentPane().removeAll();
+//               f.invalidate();
+//                icon = new ImageIcon(newImage);
+//                label = new JLabel(icon);
+                System.out.println("Here bitch!");
+                label.setIcon(new ImageIcon(newImage));
+//                 f = new JFrame();
+//                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                f.getContentPane().add(label);
+//                f.add(new JLabel(new ImageIcon(newImage)));
+//                f.setSize(500, 500);
+//                f.setLocation(400, 400);
+//                f.setVisible(true);
+
+//                ImageIcon icon = new ImageIcon(newImage);
+//                JLabel label = new JLabel(icon);
+//                f.add(label);
+//                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                f.pack();
+//                f.setVisible(true);
             }
         } else {
             noImageLoadedErrorMessage();
@@ -195,6 +250,7 @@ public class ImageReader extends javax.swing.JFrame {
             BufferedImage newImage = ImageEditor.brightenImage(loadedImage);
             if (ImageEditor.writeImage(newImage)) {
                 messageLabel.setText("Image successfully brightened!");
+                label.setIcon(new ImageIcon(newImage));
             }
 
         } else {
@@ -203,10 +259,13 @@ public class ImageReader extends javax.swing.JFrame {
     }//GEN-LAST:event_brightenImageButtonActionPerformed
 
     private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
-           if (loadedImage != null) {
+        if (loadedImage != null) {
             BufferedImage newImage = ImageEditor.rotateImage(loadedImage);
+            loadedImage = newImage; 
             if (ImageEditor.writeImage(newImage)) {
                 messageLabel.setText("Image successfuly rotated!");
+                label.setIcon(new ImageIcon(newImage));
+
             }
 
         } else {
@@ -215,10 +274,12 @@ public class ImageReader extends javax.swing.JFrame {
     }//GEN-LAST:event_rotateImageButtonActionPerformed
 
     private void blurImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blurImageActionPerformed
-     if (loadedImage != null) {
+        if (loadedImage != null) {
             BufferedImage newImage = ImageEditor.blurImage(5).filter(loadedImage, null);
             if (ImageEditor.writeImage(newImage)) {
                 messageLabel.setText("Image successfuly blurred!");
+                label.setIcon(new ImageIcon(newImage));
+
             }
 
         } else {
@@ -274,6 +335,7 @@ public class ImageReader extends javax.swing.JFrame {
     private javax.swing.JButton blurImage;
     private javax.swing.JButton brightenImageButton;
     private javax.swing.JButton darkenImageButton;
+    private javax.swing.JLabel imageLabel;
     private javax.swing.JLabel messageLabel;
     private javax.swing.JButton openFileButton;
     private javax.swing.JButton rotateImageButton;
