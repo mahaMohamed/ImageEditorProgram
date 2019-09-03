@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package imageeditorprogram;
-
+import javax.swing.JFileChooser;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,16 +14,18 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
- * @author lostm
+ * @author Maha
  */
 public class ImageReader extends javax.swing.JFrame {
+            
 
     /**
      * Creates new form ImageReader
      */
     private  JFileChooser openFileChooser;
-    private BufferedImage imageLoaded; 
-            
+    protected BufferedImage loadedImage; 
+
+    
             
     public ImageReader() {
         initComponents();
@@ -36,7 +38,14 @@ public class ImageReader extends javax.swing.JFrame {
         
         
     }
+        public BufferedImage getImageLoaded() {
+        return loadedImage;
+    }
 
+    public void setImageLoaded(BufferedImage imageLoaded) {
+        this.loadedImage = imageLoaded;
+    }
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -93,8 +102,13 @@ public class ImageReader extends javax.swing.JFrame {
         if (returnValue == JFileChooser.APPROVE_OPTION){
             
             try {
-                imageLoaded = ImageIO.read(openFileChooser.getSelectedFile()); 
+                loadedImage = ImageIO.read(openFileChooser.getSelectedFile()); 
+                ImageEditor editor = new ImageEditor(); 
+                editor.loadImage(loadedImage);
+                
                 messageLabel.setText("Image file successfuly loaded!");
+               
+                
                 
             } catch (IOException ioe){
                 messageLabel.setText("Failed to load image file!");
@@ -141,6 +155,7 @@ public class ImageReader extends javax.swing.JFrame {
                 new ImageReader().setVisible(true);
             }
         });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
