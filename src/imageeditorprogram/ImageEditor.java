@@ -41,18 +41,15 @@ public class ImageEditor {
     }
 
     public static BufferedImage rotateImage(BufferedImage image) {
-        
-        int width, height; 
-        BufferedImage newImage; 
+
+        int width, height;
+        BufferedImage newImage;
         if (imageStack.size() == 1 && originalImage != null) {
 
-             width = originalImage.getWidth();
+            width = originalImage.getWidth();
             height = originalImage.getHeight();
             newImage = new BufferedImage(height, width, originalImage.getType());
-        }
-        
-        
-        else {
+        } else {
             width = image.getWidth();
             height = image.getHeight();
             newImage = new BufferedImage(height, width, image.getType());
@@ -67,7 +64,6 @@ public class ImageEditor {
         operationStack.push("rotate");
         System.out.println("In rotate " + imageStack.size());
 
-        //   image = newImage;
         return newImage;
 
     }
@@ -81,12 +77,11 @@ public class ImageEditor {
 
     protected static BufferedImage brightenImage(BufferedImage image) {
         RescaleOp rescaleOp = new RescaleOp(1.125f, 0, null);
-        if (imageStack.size() == 1 && originalImage != null){
-         rescaleOp.filter(originalImage, image);
+        if (imageStack.size() == 1 && originalImage != null) {
+            rescaleOp.filter(originalImage, image);
+        } else {
+            rescaleOp.filter(image, image);
         }
-        else {
-                rescaleOp.filter(image, image);
-}
         BufferedImage newImage = image;
         imageStack.push(deepCopy(image));
         operationStack.push("brighten");
@@ -124,14 +119,12 @@ public class ImageEditor {
 
     protected static BufferedImage darkenImage(BufferedImage image) {
         RescaleOp rescaleOp = new RescaleOp(0.875f, 0, null);
-        
-        if (imageStack.size() == 1 && originalImage != null){
-            rescaleOp.filter(originalImage , image); 
-        }
-        
-        else {
+
+        if (imageStack.size() == 1 && originalImage != null) {
+            rescaleOp.filter(originalImage, image);
+        } else {
             rescaleOp.filter(image, image);
-           }
+        }
 //             rescaleOp = new RescaleOp(0.75f, 0, null);
 //        rescaleOp.filter(image, image);
         //    BufferedImage newImage = image; 

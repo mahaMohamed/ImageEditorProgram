@@ -26,7 +26,8 @@ public class ImageReader extends javax.swing.JFrame {
     /**
      * Creates new form ImageReader
      */
-    private JFileChooser openFileChooser;
+    private final JFileChooser openFileChooser;
+    private final JFileChooser saveFileChooser;
     protected BufferedImage loadedImage;
     private JFrame f;
     private ImageIcon icon;
@@ -42,6 +43,11 @@ public class ImageReader extends javax.swing.JFrame {
         openFileChooser.setCurrentDirectory(new File("c:\\temp"));
         //TODO  be edited (more image types) 
         openFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
+        saveFileChooser = new JFileChooser();
+        //to be edited (set path dynamically)
+        saveFileChooser.setCurrentDirectory(new File("c:\\temp"));
+        //TODO  be edited (more image types) 
+        saveFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
         f = new JFrame();
 
     }
@@ -71,13 +77,14 @@ public class ImageReader extends javax.swing.JFrame {
         blurImage = new javax.swing.JButton();
         imageLabel = new javax.swing.JLabel();
         undoEdit = new javax.swing.JButton();
+        saveImageButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Editor");
         setIconImages(null);
 
         openFileButton.setBackground(java.awt.Color.white);
-        openFileButton.setText("Open file...");
+        openFileButton.setText("Open image...");
         openFileButton.setMaximumSize(new java.awt.Dimension(120, 25));
         openFileButton.setMinimumSize(new java.awt.Dimension(120, 25));
         openFileButton.addActionListener(new java.awt.event.ActionListener() {
@@ -129,6 +136,13 @@ public class ImageReader extends javax.swing.JFrame {
             }
         });
 
+        saveImageButton.setText("Save changes...");
+        saveImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveImageButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -148,10 +162,11 @@ public class ImageReader extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(undoEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(blurImage, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+                            .addComponent(blurImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(saveImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(74, 74, 74)
                 .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -176,8 +191,10 @@ public class ImageReader extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(undoEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(saveImageButton)
+                .addGap(30, 30, 30)
                 .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
@@ -333,6 +350,30 @@ public class ImageReader extends javax.swing.JFrame {
         
     }//GEN-LAST:event_undoEditActionPerformed
 
+    private void saveImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveImageButtonActionPerformed
+        int returnValue = saveFileChooser.showSaveDialog(this);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+
+            try {
+                File finalImage = saveFileChooser.getSelectedFile();
+                String filePath = finalImage.getAbsolutePath();
+                if (!filePath.endsWith(".jpg")) {
+                    finalImage = new File(filePath + ".jpg");
+}
+                ImageIO.write(ImageEditor.imageStack.peek(), "jpg", finalImage);
+                                saveFileChooser.setFileFilter(new FileNameExtensionFilter(".jpg", "jpg"));
+
+                messageLabel.setText("Image file successfuly saved!");
+
+            } catch (IOException ioe) {
+                messageLabel.setText("Failed to save image file!");
+            }
+
+        } else {
+            messageLabel.setText("No file chosen!");
+        }    }//GEN-LAST:event_saveImageButtonActionPerformed
+
     public void noImageLoadedErrorMessage() {
 
         messageLabel.setForeground(Color.RED);
@@ -385,6 +426,7 @@ public class ImageReader extends javax.swing.JFrame {
     private javax.swing.JLabel messageLabel;
     private javax.swing.JButton openFileButton;
     private javax.swing.JButton rotateImageButton;
+    private javax.swing.JButton saveImageButton;
     private javax.swing.JButton undoEdit;
     // End of variables declaration//GEN-END:variables
 }
