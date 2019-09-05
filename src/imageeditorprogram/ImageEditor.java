@@ -1,5 +1,6 @@
 package imageeditorprogram;
 
+import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import java.awt.Image.*;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ConvolveOp;
@@ -18,12 +20,37 @@ import java.util.Stack;
 public class ImageEditor {
 
     protected static BufferedImage image;
-    protected static BufferedImage originalImage;
-    private boolean blurredBefore;
 
+    /*A variable in which the original image will be stored*/
+    protected static BufferedImage originalImage;
+
+    /*A stack thay will contain all edits done to the image to be used in the undo operation*/
     protected static Stack<BufferedImage> imageStack = new Stack();
+
+    /*A stack thay will contain all edit operations done to the image to be used in the undo operation*/
     protected static Stack<String> operationStack = new Stack();
 
+    /* A function that loads the image*/
+    protected void loadImage(BufferedImage image) throws IOException {
+
+        this.image = image;
+        this.originalImage = deepCopy(image);
+        imageStack.push(originalImage);
+        operationStack.push("original");
+
+    }
+    
+    
+    public static BufferedImage resize(BufferedImage image, int width, int height) {
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+        g2d.drawImage(image, 0, 0, width, height, null);
+        g2d.dispose();
+        return bi;
+    }
+
+    /* A function that blurs the image*/
     public static ConvolveOp blurImage(int radius) {
         if (radius < 1) {
             throw new IllegalArgumentException("Radius must be >= 1");
@@ -40,6 +67,7 @@ public class ImageEditor {
         return new ConvolveOp(kernel);
     }
 
+    /* A function that rotates the image*/
     public static BufferedImage rotateImage(BufferedImage image) {
 
         int width, height;
@@ -62,22 +90,24 @@ public class ImageEditor {
         }
         imageStack.push(deepCopy(image));
         operationStack.push("rotate");
-        System.out.println("In rotate " + imageStack.size());
 
         return newImage;
 
     }
 
-    static BufferedImage deepCopy(BufferedImage bi) {
-        ColorModel cm = bi.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bi.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    /* A function that creates and returns a copy of the passed image*/
+    static BufferedImage deepCopy(BufferedImage bufferedImage) {
+        ColorModel colorModel = bufferedImage.getColorModel();
+        boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
+        WritableRaster raster = bufferedImage.copyData(null);
+        return new BufferedImage(colorModel, raster, isAlphaPremultiplied, null);
     }
 
+    /*A function that brightens image*/
     protected static BufferedImage brightenImage(BufferedImage image) {
         RescaleOp rescaleOp = new RescaleOp(1.125f, 0, null);
         if (imageStack.size() == 1 && originalImage != null) {
+            image = deepCopy(originalImage);
             rescaleOp.filter(originalImage, image);
         } else {
             rescaleOp.filter(image, image);
@@ -85,13 +115,34 @@ public class ImageEditor {
         BufferedImage newImage = image;
         imageStack.push(deepCopy(image));
         operationStack.push("brighten");
-        System.out.println("In brighten " + imageStack.size());
-        //image = newImage;
 
         return image;
 
     }
 
+    /* A functio that darkens the image*/
+    protected static BufferedImage darkenImage(BufferedImage image) {
+        RescaleOp rescaleOp = new RescaleOp(0.875f, 0, null);
+
+        if (imageStack.size() == 1 && originalImage != null) {
+            image = deepCopy(originalImage);
+            rescaleOp.filter(originalImage, image);
+        } else {
+            rescaleOp.filter(image, image);
+        }
+        imageStack.push(deepCopy(image));
+        operationStack.push("darken");
+
+        return image;
+
+    }
+
+    protected static BufferedImage cropImage(int x, int y, int width, int height, BufferedImage src) {
+        BufferedImage dest = src.getSubimage(0, 0, width, height);
+        return dest;
+    }
+
+    /* A function that undoes past actions done by the user and returns the image to a previous state*/
     protected static BufferedImage undo() {
 
         if (imageStack.size() > 1) {
@@ -100,98 +151,27 @@ public class ImageEditor {
             }
             imageStack.pop();
             operationStack.pop();
-            System.out.println("In undo stack peek " + imageStack.size());
             return imageStack.peek();
         } else if (imageStack.size() == 1) {
-            System.out.println("In undo " + imageStack.size());
-            System.out.println("In undo stack original " + imageStack.size());
             return originalImage;
-            //  return stack.peek();
         } else {
             return image;
         }
-//        else if (image != null) {
-//            return image;
-//        } else {
-//            return null;
+
+    }
+
+//    protected static boolean writeImage(BufferedImage image) {
+//
+//        try {
+//
+//            //TO DO: set path dynamically 
+//            ImageIO.write(image, "jpg", new File("C:\\Users\\lostm\\Downloads\\your_new_image.jpg"));
+//            return true;
+//
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//            return false;
 //        }
-    }
-
-    protected static BufferedImage darkenImage(BufferedImage image) {
-        RescaleOp rescaleOp = new RescaleOp(0.875f, 0, null);
-
-        if (imageStack.size() == 1 && originalImage != null) {
-            rescaleOp.filter(originalImage, image);
-        } else {
-            rescaleOp.filter(image, image);
-        }
-//             rescaleOp = new RescaleOp(0.75f, 0, null);
-//        rescaleOp.filter(image, image);
-        //    BufferedImage newImage = image; 
-        imageStack.push(deepCopy(image));
-        operationStack.push("darken");
-        System.out.println("In darken " + imageStack.size());
-
-        return image;
-
-    }
-
-    protected void loadImage(BufferedImage image) throws IOException {
-
-        this.image = image;
-        this.originalImage = deepCopy(image);
-        imageStack.push(originalImage);
-        operationStack.push("original");
-        System.out.println("In load Image " + imageStack.size());
-
-        //     BufferedImage editedImage;
-//        editedImage = rotateImage(image);
-//        ImageIO.write(editedImage, "jpg", new File("C:\\Users\\lostm\\Downloads\\new_image.jpg"));
-    }
-
-    protected static boolean writeImage(BufferedImage image) {
-
-        try {
-
-            //TO DO: set path dynamically 
-            ImageIO.write(image, "jpg", new File("C:\\Users\\lostm\\Downloads\\your_new_image.jpg"));
-            return true;
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-//    public static void main(String[] args) {
-//
-////        File file = new File("C:\\Users\\lostm\\Downloads\\olena.jpg");
-////        BufferedImage image = null;
-////        
-////        
-////
-////        try {
-////            image = ImageIO.read(file);
-////
-////            //        ImageEditor.brightenImage(image);
-////           // image = ImageEditor.rotate(image);
-////
-////           image = blurImage(10).filter(image, null);
-////           ImageIO.write(image, "jpg", new File("C:\\Users\\lostm\\Downloads\\blur_olena.jpg"));
-////
-////        } catch (IOException e) {
-////
-////            e.printStackTrace();
-////        }
-//
-//          if (ImageEditor.image != null){
-//              ImageEditor.brightenImage(image);
-//              System.out.println("");
-//              
-//          } else {
-//              System.out.println("Not set");
-//          }
 //    }
-
 }

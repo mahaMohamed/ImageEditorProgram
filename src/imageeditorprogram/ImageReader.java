@@ -6,6 +6,9 @@
 package imageeditorprogram;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,32 +26,36 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class ImageReader extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ImageReader
-     */
     private final JFileChooser openFileChooser;
-    private final JFileChooser saveFileChooser;
-    protected BufferedImage loadedImage;
-    private JFrame f;
-    private ImageIcon icon;
-    private JLabel label;
-    protected static int blurCounter = 1; 
 
+    private final JFileChooser saveFileChooser;
+
+    protected BufferedImage loadedImage;
+
+    private JFrame imageFrame;
+
+    private ImageIcon icon;
+
+    private JLabel label;
+
+    protected static int blurCounter = 1;
 
     public ImageReader() {
         initComponents();
 
         openFileChooser = new JFileChooser();
-        //to be edited (set path dynamically)
+
         openFileChooser.setCurrentDirectory(new File("c:\\temp"));
-        //TODO  be edited (more image types) 
+
         openFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
+
         saveFileChooser = new JFileChooser();
-        //to be edited (set path dynamically)
+
         saveFileChooser.setCurrentDirectory(new File("c:\\temp"));
-        //TODO  be edited (more image types) 
+
         saveFileChooser.setFileFilter(new FileNameExtensionFilter("JPEG images", "jpg"));
-        f = new JFrame();
+
+        imageFrame = new JFrame();
 
     }
 
@@ -148,6 +155,10 @@ public class ImageReader extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(77, 77, 77)
+                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGap(135, 135, 135)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -156,7 +167,7 @@ public class ImageReader extends javax.swing.JFrame {
                             .addComponent(brightenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                             .addComponent(darkenImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                         .addComponent(imageLabel)
                         .addGap(99, 99, 99))
                     .addGroup(layout.createSequentialGroup()
@@ -165,10 +176,6 @@ public class ImageReader extends javax.swing.JFrame {
                             .addComponent(blurImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(saveImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(74, 74, 74)
-                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,9 +199,9 @@ public class ImageReader extends javax.swing.JFrame {
                 .addComponent(undoEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(saveImageButton)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGap(93, 93, 93))
         );
 
         pack();
@@ -211,35 +218,23 @@ public class ImageReader extends javax.swing.JFrame {
                 loadedImage = ImageIO.read(openFileChooser.getSelectedFile());
                 ImageEditor editor = new ImageEditor();
                 editor.loadImage(loadedImage);
-
+                
                 messageLabel.setForeground(Color.BLACK);
                 messageLabel.setText("Image file successfuly loaded!");
-             //   ImageEditor.stack.push(loadedImage);
-//                icon = new ImageIcon(loadedImage);
-//                label = new JLabel(icon);
-                // f = new JFrame();
-//                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                f.getContentPane().add(new JScrollPane(label));
-//                f.setSize(500, 500);
-//                f.setLocation(400, 400);
-//                f.setVisible(true);
 
-                //    JFrame frame = new JFrame();
                 icon = new ImageIcon(loadedImage);
                 label = new JLabel(icon);
-//                imageLabel = new JLabel (icon); 
-//                imageLabel.setText("helllllllllllllo");
-                f.add(label);
-               f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                f.pack();
-                f.setVisible(true);
+                imageFrame.add(label);
+                imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                imageFrame.pack();
+                imageFrame.setVisible(true);
 
             } catch (IOException ioe) {
                 messageLabel.setText("Failed to load image file!");
             }
 
         } else {
-            messageLabel.setForeground(Color.BLACK);
+            messageLabel.setForeground(Color.RED);
             messageLabel.setText("No file chosen!");
         }
 
@@ -249,31 +244,9 @@ public class ImageReader extends javax.swing.JFrame {
     private void darkenImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_darkenImageButtonActionPerformed
 
         if (loadedImage != null) {
+            messageLabel.setText("");
             BufferedImage newImage = ImageEditor.darkenImage(loadedImage);
-            if (ImageEditor.writeImage(newImage)) {
-                messageLabel.setText("Image successfully darkened!");
-//                f.doClick();
-//               f.getContentPane().removeAll();
-//               f.invalidate();
-//                icon = new ImageIcon(newImage);
-//                label = new JLabel(icon);
-                System.out.println("Here bitch!");
-                label.setIcon(new ImageIcon(newImage));
-//                 f = new JFrame();
-//                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                f.getContentPane().add(label);
-//                f.add(new JLabel(new ImageIcon(newImage)));
-//                f.setSize(500, 500);
-//                f.setLocation(400, 400);
-//                f.setVisible(true);
-
-//                ImageIcon icon = new ImageIcon(newImage);
-//                JLabel label = new JLabel(icon);
-//                f.add(label);
-//                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                f.pack();
-//                f.setVisible(true);
-            }
+            label.setIcon(new ImageIcon(newImage));
         } else {
             noImageLoadedErrorMessage();
         }
@@ -284,11 +257,9 @@ public class ImageReader extends javax.swing.JFrame {
     private void brightenImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brightenImageButtonActionPerformed
 
         if (loadedImage != null) {
+            messageLabel.setText("");
             BufferedImage newImage = ImageEditor.brightenImage(loadedImage);
-            if (ImageEditor.writeImage(newImage)) {
-                messageLabel.setText("Image successfully brightened!");
-                label.setIcon(new ImageIcon(newImage));
-            }
+            label.setIcon(new ImageIcon(newImage));
 
         } else {
             noImageLoadedErrorMessage();
@@ -297,13 +268,11 @@ public class ImageReader extends javax.swing.JFrame {
 
     private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
         if (loadedImage != null) {
+            messageLabel.setText("");
             BufferedImage newImage = ImageEditor.rotateImage(loadedImage);
             loadedImage = newImage;
-            if (ImageEditor.writeImage(newImage)) {
-                messageLabel.setText("Image successfuly rotated!");
-                label.setIcon(new ImageIcon(newImage));
 
-            }
+            label.setIcon(new ImageIcon(newImage));
 
         } else {
             noImageLoadedErrorMessage();
@@ -312,18 +281,12 @@ public class ImageReader extends javax.swing.JFrame {
 
     private void blurImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blurImageActionPerformed
         if (loadedImage != null) {
-            
+            messageLabel.setText("");
             BufferedImage newImage = ImageEditor.blurImage(blurCounter * 2).filter(loadedImage, null);
-            loadedImage = newImage; 
-          //  loadedImage = newImage; 
+            loadedImage = newImage;
             ImageEditor.imageStack.push(ImageEditor.deepCopy(newImage));
             blurCounter++;
-            if (ImageEditor.writeImage(newImage)) {
-                messageLabel.setText("Image successfuly blurred!");
-                label.setIcon(new ImageIcon(newImage));
-
-            }
-
+            label.setIcon(new ImageIcon(newImage));
         } else {
             noImageLoadedErrorMessage();
         }
@@ -335,11 +298,7 @@ public class ImageReader extends javax.swing.JFrame {
             BufferedImage editedImage = ImageEditor.undo();
             if (editedImage != null) {
                 label.setIcon(new ImageIcon(editedImage));
-                System.out.println("top of the stack not equal null");
-                        
-            }
-            
-            else{
+            } else {
                 messageLabel.setText("ERROR!");
             }
 
@@ -347,7 +306,7 @@ public class ImageReader extends javax.swing.JFrame {
             noImageLoadedErrorMessage();
 
         }
-        
+
     }//GEN-LAST:event_undoEditActionPerformed
 
     private void saveImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveImageButtonActionPerformed
@@ -360,9 +319,9 @@ public class ImageReader extends javax.swing.JFrame {
                 String filePath = finalImage.getAbsolutePath();
                 if (!filePath.endsWith(".jpg")) {
                     finalImage = new File(filePath + ".jpg");
-}
+                }
                 ImageIO.write(ImageEditor.imageStack.peek(), "jpg", finalImage);
-                                saveFileChooser.setFileFilter(new FileNameExtensionFilter(".jpg", "jpg"));
+                saveFileChooser.setFileFilter(new FileNameExtensionFilter(".jpg", "jpg"));
 
                 messageLabel.setText("Image file successfuly saved!");
 
@@ -373,6 +332,7 @@ public class ImageReader extends javax.swing.JFrame {
         } else {
             messageLabel.setText("No file chosen!");
         }    }//GEN-LAST:event_saveImageButtonActionPerformed
+
 
     public void noImageLoadedErrorMessage() {
 
